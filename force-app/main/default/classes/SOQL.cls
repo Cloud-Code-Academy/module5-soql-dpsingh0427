@@ -28,9 +28,11 @@ public with sharing class SOQL {
      * @return List of all leads with Id, LastName, Company, Phone, Email
      * Update the corresponding test class and testGetAllLeads method to cover this method
      */
-    //[public | private ] [static] data_type method_name (input parameters) {
-    //  The body of the method
-    //}
+     public static List<Lead>  GetAllLeads() {
+      // The body of the method
+        List<Lead> allleads = [SELECT Id, LastName, Company, Phone, Email FROM Lead];
+        return allleads;
+     }
 
     /**
      * Question 2
@@ -39,9 +41,11 @@ public with sharing class SOQL {
      * @return A list of Contact records.
      * Update the corresponding test class and testGetContactsByFirstName method to cover this method
      */
-    //[public | private ] [static] data_type method_name (input parameters) {
+    public static List<Contact>  GetContactsByFirstName(){
     //  The body of the method
-    //}
+        List<Contact> con = [SELECT Id, Name, FirstName, LastName FROM Contact WHERE FirstName = 'John'];
+        return con;
+    }
 
     /**
      * Question 3
@@ -50,9 +54,16 @@ public with sharing class SOQL {
      * @return A list of Contact Ids.
      * Update the corresponding test class and testGetContactIdsByLastName method to cover this method
      */
-    //[public | private ] [static] data_type method_name (input parameters) {
+    public static List<Id>  GetContactIdsByLastName() {
     //  The body of the method
-    //}
+    List<Contact> contacts = [SELECT Id FROM Contact WHERE LastName IN ('Smith','Jones')];
+    List<Id> conId = new List<Id>();
+    for(Contact con : contacts)
+    {
+        conId.add(con.Id);
+    }
+    return conId;
+    }
 
     /**
      * Question 4
@@ -63,9 +74,13 @@ public with sharing class SOQL {
      * @return A list of Opportunities with important opportunities fields
      * Update the corresponding test class and testGetClosedWonOpportunityCountByAccount method to cover this method
      */
-    //[public | private ] [static] data_type method_name (input parameters) {
+        public static List<Opportunity> GetClosedWonOpportunityCountByAccount(Id accId) {
+
     //  The body of the method
-    //}
+        List<Opportunity> opty = [SELECT Name, StageName, CloseDate, AccountId, Amount FROM Opportunity WHERE AccountId =: accId AND StageName = 'Closed Won'];
+        return opty;
+
+        }
 
     /**
      * Question 5
@@ -74,9 +89,10 @@ public with sharing class SOQL {
      * @return The Integer count of Account records.
      * Update the corresponding test class and testGetAccountCount method to cover this method
      */
-    //[public | private ] [static] data_type method_name (input parameters) {
-    //  The body of the method
-    //}
+    public static Integer GetAccountCount(List<Account> acc) {
+        //  The body of the method
+            return acc.size();
+        }
 
     /**
      * Question 6
@@ -85,9 +101,22 @@ public with sharing class SOQL {
      * @return A map of Task Ids to Task records.
      * Update the corresponding test class and testGetTasksDueNextWeek method to cover this method
      */
-    //[public | private ] [static] data_type method_name (input parameters) {
+    public static Map<Id, Task> GetTasksDueNextWeek(Task tt1, Task tt2, Task tt3){
     //  The body of the method
-    //}
+        
+        Map<Id, Task> taskMap = new Map<Id, Task>();
+        if(tt1.ActivityDate <= Date.today().addDays(7) && tt1.ActivityDate >= Date.today()){
+            taskMap.put(tt1.Id, tt1);
+        }
+        if(tt2.ActivityDate <= Date.today().addDays(7) && tt2.ActivityDate >= Date.today()){
+            taskMap.put(tt2.Id, tt2);
+        }
+        if(tt3.ActivityDate <= Date.today().addDays(7) && tt3.ActivityDate >= Date.today()){
+            taskMap.put(tt3.Id, tt3);
+        }
+        
+        return taskMap;
+     }
 
     /**
      * Question 7
@@ -96,9 +125,12 @@ public with sharing class SOQL {
      * @return A list of Contact records.
      * Update the corresponding test class and testGetContactsByEmailDomain method to cover this method
      */
-    //[public | private ] [static] data_type method_name (input parameters) {
+    public static List<Contact> GetContactsByEmailDomain() {
     //  The body of the method
-    //}
+        List<Contact> con = [SELECT Id, Name, Email FROM Contact WHERE Email LIKE '%example.com'];
+        return con;
+
+    }
 
     /**
      * Question 8
@@ -108,7 +140,10 @@ public with sharing class SOQL {
      * @return A list of Opportunity records.
      */
     public static List<Opportunity> getOpportunitiesByNameKeyword(String keyword) {
-        return null; // Replace null with the variable you used to store the result
+        String searchPattern = '%' + keyword + '%';
+        List<Opportunity> opp = [SELECT Id, Name FROM Opportunity WHERE Name LIKE :searchPattern];
+        return opp;
+        
     }
 
     /**
@@ -117,7 +152,9 @@ public with sharing class SOQL {
      * @return A list of Case records.
      */
     public static List<Case> getFilterCaseOrigins() {
-        return null; // Replace null with the variable you used to store the result
+        List<Case> cases = [SELECT Id, Origin FROM Case WHERE Origin NOT IN ('Web', 'Email', '')];
+        return cases;
+        
     }
 
     /**
@@ -358,4 +395,8 @@ public with sharing class SOQL {
 
         // Update the Opportunities
     }
+
+	
+
+	
 }
